@@ -70,13 +70,13 @@ void make_it_start(){
 void display(void)
 {
     // sort the displayables by their z-coordinate
-    std::sort(display_queue.begin(), display_queue.end(), disp_z_cmp {});
+    std::sort(Displayable::display_queue.begin(), Displayable::display_queue.end(), disp_z_cmp {});
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-zoom, zoom, -zoom, zoom, 0.0f, 1.0f); // left, right, bottom, top, near, far
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
-    for (const auto& item : display_queue)
+    for (const auto& item : Displayable::display_queue)
     {
         item->display();
     }
@@ -86,7 +86,8 @@ void display(void)
 
 void timer(const int step)
 {
-    if(!programme_paused){
+    
+    /*if(!programme_paused){
 
         for(auto& it =move_queue.begin(); it!=move_queue.end(); it++){
            
@@ -96,7 +97,7 @@ void timer(const int step)
                 (*it)->move(); 
             }
         }
-        /*
+        
         for (auto& item : move_queue)
         {
             if(item->is_taking_off()){
@@ -106,8 +107,30 @@ void timer(const int step)
             }else{
                 item->move();
             }
-        }*/
+        }
+    */
+    // TASK_0 C-2: pause.
+    if (!is_paused)
+    {
+        // TASK_0 C-4: remove aircrafts
+        // We need to replace the foreach with a for with iterator,
+        // because we are going to modify the container while iterating
+        // through it.
+        for (auto it = move_queue.begin(); it != move_queue.end();)
+        {
+            auto* dynamic_obj = *it;
+            if (dynamic_obj->update())
+            {
+                ++it;
+            }
+            else
+            {
+                it = move_queue.erase(it);
+                delete dynamic_obj;
+            }
+        }
     }
+
     glutPostRedisplay();
 
     unsigned int tmp =0u;
