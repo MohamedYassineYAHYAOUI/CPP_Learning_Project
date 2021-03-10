@@ -54,16 +54,6 @@ void reshape_window(int w, int h)
     handle_error("Cannot reshape window");
 }
 
-void make_it_stop(){
-    programme_paused = true;
-    //ticks_per_sec = 0u;
-}
-
-
-void make_it_start(){
-    programme_paused = false;
-    //ticks_per_sec = DEFAULT_TICKS_PER_SEC;
-}
 
 
 
