@@ -5,16 +5,29 @@
 Compilez et lancez le programme.
 
 Allez dans le fichier `tower_sim.cpp` et recherchez la fonction responsable de gérer les inputs du programme.
+
+fonction TowerSimulation 
+create_keystrokes création des touches 
+
 Sur quelle touche faut-il appuyer pour ajouter un avion ?
+touche c
 Comment faire pour quitter le programme ?
+touche X ou Q
 A quoi sert la touche 'F' ?
+mettre fullscreen 
 
 Ajoutez un avion à la simulation et attendez.
 Que est le comportement de l'avion ?
+chaque avion attend pour avoir de la place 
+
 Quelles informations s'affichent dans la console ?
+
+information sur landing / servicing / liste des avions
 
 Ajoutez maintenant quatre avions d'un coup dans la simulation.
 Que fait chacun des avions ?
+ils tournent autour de l'airport,  jusqu'au avoir de la place (3 emplacement) pour le tériçage
+y'a une superposition des avions lors de la tériçage, mais pas sur les carrés 
 
 ## Analyse du code
 
@@ -25,20 +38,32 @@ Pour les classes `Tower`, `Aircaft`, `Airport` et `Terminal`, listez leurs fonct
 Réalisez ensuite un schéma présentant comment ces différentes classes intéragissent ensemble.
 
 Quelles classes et fonctions sont impliquées dans la génération du chemin d'un avion ?
+Aircraft, tower
 Quel conteneur de la librairie standard a été choisi pour représenter le chemin ?
+std::deque<Waypoint>;
+
 Expliquez les intérêts de ce choix.
+
+is an indexed sequence container that allows fast insertion and deletion at both its beginning and its end. In addition, insertion and deletion at either end of a deque never invalidates pointers or references to the rest of the elements.
+ce qui peremt de gérer des avions dans la liste de tériçage
+he elements of a deque are not stored contiguously
 
 ## Bidouillons !
 
 1) Déterminez à quel endroit du code sont définies les vitesses maximales et accélération de chaque avion.
+ TowerSimulation::create_aircraft
+
 Le Concorde est censé pouvoir voler plus vite que les autres avions.
 Modifiez le programme pour tenir compte de cela.
+
+dans Aircraft_type, on peut changer les vitesses max pour l'avion 
 
 2) Identifiez quelle variable contrôle le framerate de la simulation.
 Ajoutez deux nouveaux inputs au programme permettant d'augmenter ou de diminuer cette valeur.
 Essayez maintenant de mettre en pause le programme en manipulant ce framerate. Que se passe-t-il ? Fixez le problème.
 
 3) Identifiez quelle variable contrôle le temps de débarquement des avions et doublez-le.
+SERVICE_CYCLES = 40u; dans config, 
 
 4) Lorsqu'un avion décolle, celui-ci n'est pas retiré du programme.
 Faites en sorte qu'il le soit.

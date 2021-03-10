@@ -19,6 +19,7 @@ private:
     Tower& control;
     bool landing_gear_deployed = false; // is the landing gear deployed?
     bool is_at_terminal        = false;
+    bool flag_test             = false;
 
     // turn the aircraft to arrive at the next waypoint
     // try to facilitate reaching the waypoint after the next by facing the
@@ -28,6 +29,7 @@ private:
     // = w1 + W*d/2
     void turn_to_waypoint();
     void turn(Point3D direction);
+    bool is_taking_off();
 
     // select the correct tile in the plane texture (series of 8 sprites facing
     // [North, NW, W, SW, S, SE, E, NE])
