@@ -54,6 +54,19 @@ void reshape_window(int w, int h)
     handle_error("Cannot reshape window");
 }
 
+void make_it_stop(){
+    programme_paused = true;
+    //ticks_per_sec = 0u;
+}
+
+
+void make_it_start(){
+    programme_paused = false;
+    //ticks_per_sec = DEFAULT_TICKS_PER_SEC;
+}
+
+
+
 void display(void)
 {
     // sort the displayables by their z-coordinate
@@ -73,12 +86,36 @@ void display(void)
 
 void timer(const int step)
 {
-    for (auto& item : move_queue)
-    {
-        item->move();
+    if(!programme_paused){
+
+        for(auto& it =move_queue.begin(); it!=move_queue.end(); it++){
+           
+            if((*it)->is_taking_off()){
+                move_queue.erase(*it);
+            }else{
+                (*it)->move(); 
+            }
+        }
+        /*
+        for (auto& item : move_queue)
+        {
+            if(item->is_taking_off()){
+                auto it = std::find(move_queue.begin(),move_queue.end(),item);
+
+                item->set_for_remove();
+            }else{
+                item->move();
+            }
+        }*/
     }
     glutPostRedisplay();
-    glutTimerFunc(1000u / ticks_per_sec, timer, step + 1);
+
+    unsigned int tmp =0u;
+    tmp =1000u / ticks_per_sec;
+
+   // std::cout  <<"tmp :" << tmp << std::endl;
+
+    glutTimerFunc(tmp, timer, step + 1);
 }
 
 void init_gl(int argc, char** argv, const char* title)
@@ -104,6 +141,7 @@ void init_gl(int argc, char** argv, const char* title)
 
 void loop()
 {
+
     glutTimerFunc(100, timer, 0);
     glutMainLoop();
 }

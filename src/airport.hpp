@@ -71,6 +71,5 @@ public:
             t.move();
         }
     }
-
     friend class Tower;
 };

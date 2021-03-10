@@ -76,6 +76,14 @@ void Aircraft::operate_landing_gear()
     }
 }
 
+bool Aircraft::is_taking_off(){
+    const auto it =  waypoints.begin();
+    return  it->is_on_ground() && !std::next(it)->is_on_ground() ;
+}
+
+
+
+
 void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
 {
     if (front)
