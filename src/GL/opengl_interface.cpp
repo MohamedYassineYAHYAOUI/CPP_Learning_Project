@@ -74,6 +74,9 @@ void display(void)
     glutSwapBuffers();
 }
 
+
+
+
 void timer(const int step)
 {
     

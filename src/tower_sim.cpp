@@ -17,12 +17,13 @@ using namespace std::string_literals;
 const std::string airlines[8] = { "AF", "LH", "EY", "DL", "KL", "BA", "AY", "EY" };
 
 TowerSimulation::TowerSimulation(int argc, char** argv) :
-    help { (argc > 1) && (std::string { argv[1] } == "--help"s || std::string { argv[1] } == "-h"s) }
+    help { (argc > 1) && (std::string { argv[1] } == "--help"s || std::string { argv[1] } == "-h"s) },
+ 
 {
     MediaPath::initialize(argv[0]);
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     GL::init_gl(argc, argv, "Airport Tower Simulation");
-
+   
     create_keystrokes();
 }
 

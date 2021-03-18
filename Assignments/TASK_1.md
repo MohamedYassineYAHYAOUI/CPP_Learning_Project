@@ -30,9 +30,15 @@ Il serait donc bon de savoir qui est censé détruire les avions du programme, a
 
 Répondez aux questions suivantes :
 1. Qui est responsable de détruire les avions du programme ? (si vous ne trouvez pas, faites/continuez la question 4 dans TASK_0)
+void timer(const int step) qui fait erase de aircraft
 2. Quelles autres structures contiennent une référence sur un avion au moment où il doit être détruit ?
+GL::display_queue et GL::move_queue.
+
 3. Comment fait-on pour supprimer la référence sur un avion qui va être détruit dans ces structures ?
+avec unique_ptr permet la destruction du ref lorsque l'objet est detrutit
+
 4. Pourquoi ne pouvez-vous pas appliquer la même chose sur votre conteneur d'avions ?
+
 
 Pour simplifier le problème, vous allez déplacer l'ownership des avions dans la classe `AircraftManager`.
 Vous allez également faire en sorte que ce soit cette classe qui s'occupe de déplacer les avions, et non plus la fonction `timer`.

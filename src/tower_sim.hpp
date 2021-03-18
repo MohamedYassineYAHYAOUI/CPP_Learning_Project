@@ -1,5 +1,7 @@
 #pragma once
 
+#include "aircraft_manager.hpp"
+
 class Airport;
 struct AircraftType;
 
@@ -8,6 +10,8 @@ class TowerSimulation
 private:
     bool help        = false;
     Airport* airport = nullptr;
+    AircraftManager&  _aircraft_manager ;
+
 
     TowerSimulation(const TowerSimulation&) = delete;
     TowerSimulation& operator=(const TowerSimulation&) = delete;

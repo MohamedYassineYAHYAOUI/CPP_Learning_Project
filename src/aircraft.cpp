@@ -145,7 +145,6 @@ bool Aircraft::update()
                 pos.z() -= SINK_FACTOR * (SPEED_THRESHOLD - speed_len);
             }
         }
-
         // update the z-value of the displayable structure
         GL::Displayable::z = pos.x() + pos.y();
     }
