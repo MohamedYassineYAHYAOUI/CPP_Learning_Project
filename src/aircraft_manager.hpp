@@ -1,19 +1,18 @@
 #pragma once
 
-#include <vector>
+#include "GL/dynamic_object.hpp"
 #include "aircraft.hpp"
 
-class AircraftManager
+#include <memory>
+#include <vector>
+
+class AircraftManager : public GL::DynamicObject
 {
 private:
-    const std::vector<std::unique_ptr<Aircraft>> _aircrafts ;
+    std::vector<std::unique_ptr<Aircraft>> aircrafts;
 
+public:
+    void add(std::unique_ptr<Aircraft> aircraft);
 
-public: 
-    AircraftManager();
-    virtual ~AircraftManager()
-    {
-        _aircrafts.erase(std::find(_aircrafts.begin(), _aircrafts.end(), this));
-    }
-
+    bool update() override;
 };
