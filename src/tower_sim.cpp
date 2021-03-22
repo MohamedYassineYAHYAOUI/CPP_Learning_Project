@@ -17,7 +17,7 @@ using namespace std::string_literals;
 const std::string airlines[8] = { "AF", "LH", "EY", "DL", "KL", "BA", "AY", "EY" };
 
 TowerSimulation::TowerSimulation(int argc, char** argv) :
-    help { (argc > 1) && (std::string { argv[1] } == "--help"s || std::string { argv[1] } == "-h"s) },
+    help { (argc > 1) && (std::string { argv[1] } == "--help"s || std::string { argv[1] } == "-h"s) }
  
 {
     MediaPath::initialize(argv[0]);
@@ -77,6 +77,15 @@ void TowerSimulation::create_keystrokes()
     // Also, it would make no sense to use the framerate to simulate the pause, cause how would we unpause if
     // the program is not running anymore ?
     GL::keystrokes.emplace('p', []() { GL::is_paused = !GL::is_paused; });
+
+    // aircraft 
+   
+    for (int i = 0; i < 8; i++)
+    {
+        GL::keystrokes.emplace(i+'0',[this, i](){ manager.number_aircraft_by_index(airlines[i]);});
+    }    
+
+
 }
 
 void TowerSimulation::display_help() const
@@ -84,9 +93,10 @@ void TowerSimulation::display_help() const
     std::cout << "This is an airport tower simulator" << std::endl
               << "the following keysstrokes have meaning:" << std::endl;
 
-    for (const auto& ks_pair : GL::keystrokes)
+    for (const auto& [key, value] : GL::keystrokes)
     {
-        std::cout << ks_pair.first << ' ';
+        //std::cout << ks_pair.first << ' ';
+        std::cout << key << " " ; 
     }
 
     std::cout << std::endl;

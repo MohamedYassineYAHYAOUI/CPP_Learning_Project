@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 class AircraftManager : public GL::DynamicObject
 {
@@ -15,4 +16,6 @@ public:
     void add(std::unique_ptr<Aircraft> aircraft);
 
     bool update() override;
+
+    void number_aircraft_by_index(const std::string& airline);
 };

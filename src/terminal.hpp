@@ -6,6 +6,7 @@
 
 #include <cassert>
 
+
 class Terminal : public GL::DynamicObject
 {
 private:

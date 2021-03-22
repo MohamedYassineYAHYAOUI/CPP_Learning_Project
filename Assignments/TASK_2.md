@@ -6,7 +6,7 @@
 
 `TowerSimulation::display_help()` est chargé de l'affichage des touches disponibles.
 Dans sa boucle, remplacez `const auto& ks_pair` par un structured binding adapté.
-
+const auto& [key, value] : GL::keystrokes
 ### B - Algorithmes divers
 
 1. `AircraftManager::move()` (ou bien `update()`) supprime les avions de la `move_queue` dès qu'ils sont "hors jeux".
@@ -14,6 +14,7 @@ En pratique, il y a des opportunités pour des pièges ici. Pour les éviter, `<
 Remplacez votre boucle avec un appel à `std::remove_if`.
 
 **Attention**: pour cela c'est necessaire que `AircraftManager` stocke les avion dans un `std::vector` ou `std::list` (c'est déjà le cas pour la solution filé).
+    aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(), [](auto& aircraft){return !aircraft->update();}), aircrafts.end());
 
 2. Pour des raisons de statistiques, on aimerait bien être capable de compter tous les avions de chaque airline.
 A cette fin, rajoutez des callbacks sur les touches `0`..`7` de manière à ce que le nombre d'avions appartenant à `airlines[x]` soit affiché en appuyant sur `x`.
@@ -27,7 +28,13 @@ Remplacez le tableau `Point3D::values` par un `std::array` et puis,
 remplacez le code des fonctions suivantes en utilisant des fonctions de `<algorithm>` / `<numeric>`:
 
 1. `Point3D::operator*=(const float scalar)`
+    std::transform(values.begin(), values.end(), values.begin(), [scalar](float v){return v*scalar;});
 2. `Point3D::operator+=(const Point3D& other)` et `Point3D::operator-=(const Point3D& other)`
+    int i=0;
+    pour operator+=
+    std::transform(values.begin(), values.end(), values.begin(), [&other, &i](float v){return v+other.values[i++];});
+    pour operator-=
+    std::transform(values.begin(), values.end(), values.begin(), [&other, &i](float v){return v-other.values[i++];});
 3. `Point3D::length() const`
 
 ---
