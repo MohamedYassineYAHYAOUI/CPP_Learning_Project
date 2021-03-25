@@ -76,7 +76,7 @@ void Aircraft::operate_landing_gear()
     }
 }
 
-bool Aircraft::is_taking_off(){
+bool Aircraft::is_taking_off() const {
     const auto it =  waypoints.begin();
     return  it->is_on_ground() && !std::next(it)->is_on_ground() ;
 }
@@ -96,6 +96,12 @@ void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
     }
 }
 
+
+
+
+
+
+
 bool Aircraft::update()
 {
     if (waypoints.empty())
@@ -107,9 +113,21 @@ bool Aircraft::update()
 
         waypoints = control.get_instructions(*this);
     }
+    
+/*
+    if(is_circling()){
+        WaypointQueue newWayPoint =  control.reserve_terminal(*this);
+        if(!newWayPoint.empty()){
+            std::swap(waypoints, newWayPoint);
+           // waypoints = newWayPoint;
+        }
+    }
+*/
+
 
     if (!is_at_terminal)
     {
+
         turn_to_waypoint();
         // move in the direction of the current speed
         pos += speed;
@@ -138,6 +156,11 @@ bool Aircraft::update()
         }
         else
         {
+
+            if( fuel-- <= 0){
+                std::cout << "Aircraft " << flight_number << " crashed !!" << std::endl;
+                return false;
+            }
             // if we are in the air, but too slow, then we will sink!
             const float speed_len = speed.length();
             if (speed_len < SPEED_THRESHOLD)
@@ -151,6 +174,18 @@ bool Aircraft::update()
 
     return true;
 }
+
+
+bool Aircraft::is_circling() const
+{   
+   return !has_terminal() && !is_at_terminal && !is_taking_off();
+}
+
+bool Aircraft::has_terminal() const
+{
+    return waypoints.back().is_at_terminal();
+};
+
 
 void Aircraft::display() const
 {

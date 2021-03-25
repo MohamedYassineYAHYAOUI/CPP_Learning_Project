@@ -28,6 +28,10 @@ private:
     // 2. l'avion a terminé sa course de décollage => waypoints.empty()
     bool is_service_done = false;
 
+    //TASK-2 OBJECTIF-2.A
+    // initialisé a la création avec une valeur random entre 150 et 3000
+    int fuel;
+
     // turn the aircraft to arrive at the next waypoint
     // try to facilitate reaching the waypoint after the next by facing the
     // right way to this end, we try to face the point Z on the line spanned by
@@ -36,7 +40,7 @@ private:
     // = w1 + W*d/2
     void turn_to_waypoint();
     void turn(Point3D direction);
-    bool is_taking_off();
+    bool is_taking_off() const;
 
     // select the correct tile in the plane texture (series of 8 sprites facing
     // [North, NW, W, SW, S, SE, E, NE])
@@ -48,6 +52,11 @@ private:
     void add_waypoint(const Waypoint& wp, const bool front);
     bool is_on_ground() const { return pos.z() < DISTANCE_THRESHOLD; }
     float max_speed() const { return is_on_ground() ? type.max_ground_speed : type.max_air_speed; }
+
+    //TASK 2 - OBJECTIF 2.B.1
+    bool is_circling() const ;
+
+    bool has_terminal() const;
 
     Aircraft(const Aircraft&) = delete;
     Aircraft& operator=(const Aircraft&) = delete;
@@ -63,10 +72,12 @@ public:
         control { control_ }
     {
         speed.cap_length(max_speed());
+        fuel = std::rand() % 150 + 3000;
     }
 
     const std::string& get_flight_num() const { return flight_number; }
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
+
 
     void display() const override;
     bool update() override;

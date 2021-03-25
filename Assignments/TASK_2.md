@@ -53,6 +53,7 @@ Décrémentez cette valeur dans `Aircraft::update` si l'avion est en vol.\
 Lorsque cette valeur atteint 0, affichez un message dans la console pour indiquer le crash, et faites en sorte que l'avion soit supprimé du manager.
 
 N'hésitez pas à adapter la borne `150` - `3'000`, de manière à ce que des avions se crashent de temps en temps.
+ fuel = std::rand() % 150 + 3000;
 
 ### B - Minimiser les crashs
 

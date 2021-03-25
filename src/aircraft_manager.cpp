@@ -40,3 +40,5 @@ void AircraftManager::number_aircraft_by_index(const std::string& airline){
     [airline](const auto& aircraft){return aircraft->get_flight_num().substr(0,2).compare(airline) == 0;});
     std::cout << "number of " << airline << ": "<< cnt << std::endl;
 }
+
+

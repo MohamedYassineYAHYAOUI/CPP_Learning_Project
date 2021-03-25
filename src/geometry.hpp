@@ -139,7 +139,7 @@ struct Point3D
 
     
     
-    //float length() const { return std::sqrt(x() * x() + y() * y() + z() * z()); }
+    float length() const { return std::sqrt(x() * x() + y() * y() + z() * z()); }
 
     //float length() const { return std::sqrt(std::accumulate(values.begin(), values.end(), 0, [](const float v1, const float v2){return v1 + (v2*v2);}));}
 
