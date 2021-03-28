@@ -30,7 +30,7 @@ private:
 
     //TASK-2 OBJECTIF-2.A
     // initialisé a la création avec une valeur random entre 150 et 3000
-    int fuel;
+    mutable int fuel;
 
     // turn the aircraft to arrive at the next waypoint
     // try to facilitate reaching the waypoint after the next by facing the
@@ -56,7 +56,9 @@ private:
     //TASK 2 - OBJECTIF 2.B.1
     bool is_circling() const ;
 
-    bool has_terminal() const;
+
+
+    
 
     Aircraft(const Aircraft&) = delete;
     Aircraft& operator=(const Aircraft&) = delete;
@@ -72,7 +74,9 @@ public:
         control { control_ }
     {
         speed.cap_length(max_speed());
-        fuel = std::rand() % 150 + 3000;
+        //fuel = std::rand() % 150 + MAX_FUEL;
+        fuel = INITIAL_MIN_FUEL;
+    
     }
 
     const std::string& get_flight_num() const { return flight_number; }
@@ -81,6 +85,14 @@ public:
 
     void display() const override;
     bool update() override;
+    
+    bool has_terminal() const;
+    int get_fuel() const;
+
+    bool is_low_on_fuel() const {return fuel<200;}
+    bool aircraft_in_terminal() const {return is_at_terminal;}
+    
+    void refill(int& fuel_stock) const; 
 
     friend class Tower;
 };

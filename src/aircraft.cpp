@@ -97,11 +97,6 @@ void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
 }
 
 
-
-
-
-
-
 bool Aircraft::update()
 {
     if (waypoints.empty())
@@ -193,4 +188,23 @@ bool Aircraft::has_terminal() const
 void Aircraft::display() const
 {
     type.texture.draw(project_2D(pos), { PLANE_TEXTURE_DIM, PLANE_TEXTURE_DIM }, get_speed_octant());
+}
+
+
+int Aircraft::get_fuel() const
+{
+    return fuel;
+}
+
+
+void Aircraft::refill(int& fuel_stock) const
+{
+     std::cout <<"before " << flight_number << " fuel value "<< fuel << std::endl;
+    int to_add = MAX_FUEL - fuel;
+    if(fuel_stock <= to_add){
+        to_add = fuel_stock;
+    }
+    fuel += to_add;
+    fuel_stock -= to_add; 
+    std::cout << flight_number << " refueled to "<< fuel <<" | fuel stock remaining: "<<fuel_stock << std::endl;
 }
