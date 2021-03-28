@@ -22,6 +22,8 @@ public:
 
     bool is_on_ground() const { return type != wp_air; }
     bool is_at_terminal() const { return type == wp_terminal; }
+
+    
 };
 
 using WaypointQueue = std::deque<Waypoint>;

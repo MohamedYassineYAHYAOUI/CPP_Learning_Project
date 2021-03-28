@@ -111,18 +111,21 @@ bool Aircraft::update()
             return false;
         }
 
-        waypoints = control.get_instructions(*this);
-    }
-    
-/*
-    if(is_circling()){
-        WaypointQueue newWayPoint =  control.reserve_terminal(*this);
-        if(!newWayPoint.empty()){
-            std::swap(waypoints, newWayPoint);
-           // waypoints = newWayPoint;
+        if(is_circling() && !has_terminal()){
+            
+            waypoints =  control.reserve_terminal(*this);
+            /*if(!newWayPoint.empty()){
+                //std::copy(newWayPoint.begin(), newWayPoint.end(), waypoints.begin());
+                //waypoints.assign(newWayPoint.begin(), newWayPoint.end());
+                waypoints.erase(waypoints.begin(), waypoints.end());
+                std::copy(newWayPoint.begin(), newWayPoint.end(), waypoints.begin());
+            }*/
+        }else{
+            waypoints = control.get_instructions(*this);
         }
+
     }
-*/
+
 
 
     if (!is_at_terminal)
@@ -178,12 +181,12 @@ bool Aircraft::update()
 
 bool Aircraft::is_circling() const
 {   
-   return !has_terminal() && !is_at_terminal && !is_taking_off();
+   return !has_terminal() && !is_at_terminal;// && !is_taking_off();
 }
 
 bool Aircraft::has_terminal() const
 {
-    return waypoints.back().is_at_terminal();
+    return !waypoints.empty() && waypoints.back().is_at_terminal();
 };
 
 
