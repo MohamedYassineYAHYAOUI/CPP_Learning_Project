@@ -40,7 +40,6 @@ private:
     // = w1 + W*d/2
     void turn_to_waypoint();
     void turn(Point3D direction);
-    bool is_taking_off() const;
 
     // select the correct tile in the plane texture (series of 8 sprites facing
     // [North, NW, W, SW, S, SE, E, NE])
@@ -49,17 +48,18 @@ private:
     void arrive_at_terminal();
     // deploy and retract landing gear depending on next waypoints
     void operate_landing_gear();
-    void add_waypoint(const Waypoint& wp, const bool front);
+
+    template <bool front>
+    void add_waypoint(const Waypoint& wp);
+
+    void fuel_consumption();
+    
+    
     bool is_on_ground() const { return pos.z() < DISTANCE_THRESHOLD; }
     float max_speed() const { return is_on_ground() ? type.max_ground_speed : type.max_air_speed; }
 
     //TASK 2 - OBJECTIF 2.B.1
     bool is_circling() const ;
-
-
-
-    
-
     Aircraft(const Aircraft&) = delete;
     Aircraft& operator=(const Aircraft&) = delete;
 
@@ -70,13 +70,12 @@ public:
         type { type_ },
         flight_number { flight_number_ },
         pos { pos_ },
-        speed { speed_ },
+        speed { speed_  },
         control { control_ }
     {
         speed.cap_length(max_speed());
-        //fuel = std::rand() % 150 + MAX_FUEL;
+        //fuel = INITIAL_MIN_FUEL +(std::rand()  % (MAX_FUEL - INITIAL_MIN_FUEL));
         fuel = INITIAL_MIN_FUEL;
-    
     }
 
     const std::string& get_flight_num() const { return flight_number; }
@@ -89,7 +88,9 @@ public:
     bool has_terminal() const;
     int get_fuel() const;
 
-    bool is_low_on_fuel() const {return fuel<200;}
+    bool is_low_on_fuel() const {
+        return fuel<200;
+    }
     bool aircraft_in_terminal() const {return is_at_terminal;}
     
     void refill(int& fuel_stock) const; 

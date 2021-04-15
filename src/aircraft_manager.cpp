@@ -11,15 +11,12 @@ void AircraftManager::add(std::unique_ptr<Aircraft> aircraft)
 void AircraftManager::print_aircrafts()
 {
     std::for_each(aircrafts.begin(), aircrafts.end(), 
-    [](auto& a1){std::cout << a1->get_flight_num() << " has terminal " << a1->has_terminal() << " / Fuel : " << a1->get_fuel() << std::endl;});
-
+    [](auto& a1){std::cout << a1->get_flight_num() << " has terminal " << a1->has_terminal()<< " / Fuel : " << a1->get_fuel() << std::endl;});
 }
 
 
 bool AircraftManager::update()
 {
-
-
     std::sort(aircrafts.begin(), aircrafts.end(), [](auto& a1, auto& a2){
         if((a1->has_terminal() && a2->has_terminal()) || (!a1->has_terminal() && !a2->has_terminal())){
             return a1->get_fuel() > a2->get_fuel(); 
@@ -32,31 +29,25 @@ bool AircraftManager::update()
         }
         });
 
-    //print_aircrafts();
-    //std::cout << "required fuel " << get_required_fuel() << std::endl;
-    
-    aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(), [](auto& aircraft){return !aircraft->update();}), 
-    aircrafts.end());
+    print_aircrafts();
 
-    /*for (auto aircraft_it = aircrafts.begin(); aircraft_it != aircrafts.end();)
-    {
-        // On doit déréférencer 2x pour obtenir une référence sur l'Aircraft : une fois pour déréférencer
-        // l'itérateur, et une deuxième fois pour déréférencer le unique_ptr.
-        auto& aircraft = **aircraft_it;
-        
-       
-        
-        if (aircraft.update())
-        {
-            ++aircraft_it;
-        }
-        else
-        {
-            aircraft_it = aircrafts.erase(aircraft_it);
-        }
-    }
-    */
+    
+    aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(), [this](auto& aircraft){
+            try{
+                return !aircraft->update();
+            }catch(AircraftCrash& e){
+                this->_crash_conter++;
+                std::cerr << e.what() <<std::endl;
+                return true;
+            }
+        }), aircrafts.end());
+
     return true;
+}
+
+
+void AircraftManager::number_of_crashed_airplanes(){
+    std::cout << "Number of aircraft that crashed: "<<_crash_conter << std::endl;
 }
 
 
@@ -68,29 +59,17 @@ void AircraftManager::number_aircraft_by_index(const std::string& airline){
 
 
 int AircraftManager::get_required_fuel(){
-   
-    /*return std::accumulate(aircrafts.begin(), aircrafts.end(), 0,
-    [](int sum, auto& aircraft){
-        assert(aircraft != nullptr);
-        if(aircraft->is_low_on_fuel() && aircraft->aircraft_in_terminal())
-        {
-            sum += (3000 - aircraft->get_fuel());
-        }
-        return sum;
-    });*/
-
-
     int sum =0;
-    for (auto aircraft_it = aircrafts.begin(); aircraft_it != aircrafts.end();)
-    {
-        // On doit déréférencer 2x pour obtenir une référence sur l'Aircraft : une fois pour déréférencer
-        // l'itérateur, et une deuxième fois pour déréférencer le unique_ptr.
-        auto& aircraft = **aircraft_it;
-        if(aircraft.is_low_on_fuel() && aircraft.aircraft_in_terminal()){  
-            sum+= (3000 - aircraft.get_fuel());
+
+    std::cout << "size " << aircrafts.size() << std::endl;
+
+    std::for_each(aircrafts.begin(),aircrafts.end(),[&sum](auto& a){
+
+        if(a->is_low_on_fuel() && a-> aircraft_in_terminal()){
+            sum+= (3000 - a->get_fuel());
         }
-        ++aircraft_it;
-    }
+    });
+    
     return sum;
 }
 

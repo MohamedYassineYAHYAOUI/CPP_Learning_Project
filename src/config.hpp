@@ -1,6 +1,7 @@
 #pragma once
 
 #include "img/media_path.hpp"
+#include "AircraftCrash.hpp"
 
 #include <stdexcept>
 
@@ -33,4 +34,4 @@ constexpr int MAX_FUEL = 3000;
 constexpr int INITIAL_MIN_FUEL = 250;
 constexpr int DELIVERED_FUEL = 5000;
 
-using AircraftCrash = std::runtime_error;
+//using AircraftCrash = std::runtime_error;

@@ -80,28 +80,6 @@ void display(void)
 void timer(const int step)
 {
     
-    /*if(!programme_paused){
-
-        for(auto& it =move_queue.begin(); it!=move_queue.end(); it++){
-           
-            if((*it)->is_taking_off()){
-                move_queue.erase(*it);
-            }else{
-                (*it)->move(); 
-            }
-        }
-        
-        for (auto& item : move_queue)
-        {
-            if(item->is_taking_off()){
-                auto it = std::find(move_queue.begin(),move_queue.end(),item);
-
-                item->set_for_remove();
-            }else{
-                item->move();
-            }
-        }
-    */
     // TASK_0 C-2: pause.
     if (!is_paused)
     {

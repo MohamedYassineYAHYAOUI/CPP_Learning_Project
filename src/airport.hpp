@@ -21,7 +21,7 @@ private:
     const GL::Texture2D texture;
     std::vector<Terminal> terminals;
     Tower tower;
-    AircraftManager aircraft_manager;
+    AircraftManager* aircraft_manager;
 
     int fuel_stock = 0;
     int ordered_fuel =0;
@@ -57,14 +57,18 @@ private:
     Terminal& get_terminal(const size_t terminal_num) { return terminals.at(terminal_num); }
 
 public:
-    Airport(const AirportType& type_, const Point3D& pos_, const img::Image* image, const float z_ = 1.0f) :
+
+    Airport( const AirportType& type_, const Point3D& pos_, const img::Image* image, AircraftManager& manager,  const float z_ = 1.0f)  :
         GL::Displayable { z_ },
         type { type_ },
         pos { pos_ },
         texture { image },
         terminals { type.create_terminals() },
         tower { *this }
-    {}
+    {
+
+        aircraft_manager = &manager;
+    }
 
     Tower& get_tower() { return tower; }
 
@@ -72,26 +76,18 @@ public:
 
     bool update() override
     {
-
         
-        for (auto& t : terminals)
-        {
-            if(next_refill_time ==0){
-                fuel_stock += ordered_fuel;
-                std::cout << "required fuel "<< aircraft_manager.get_required_fuel() << std::endl;
-                ordered_fuel = std::min(aircraft_manager.get_required_fuel(), DELIVERED_FUEL);
-                next_refill_time = 100;
-                std::cout << "fuel stock " << fuel_stock << std::endl;
-                std::cout << "ordered fuel " << ordered_fuel << std::endl;
-                //std::cout << " " << fuel_stock << std::endl;
-                
-            }else{
-                next_refill_time-=1;
+        if(next_refill_time == 0){
+            fuel_stock += ordered_fuel;
+            ordered_fuel = std::min(aircraft_manager->get_required_fuel(), DELIVERED_FUEL);
+            next_refill_time = 100;
+        }else{
+            next_refill_time-=1;
+            for(auto& t: terminals){
                 t.refill_aircraft_if_needed(fuel_stock);
                 t.update();
             }
         }
-
         return true;
     }
     friend class Tower;

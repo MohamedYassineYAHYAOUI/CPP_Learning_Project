@@ -1,8 +1,10 @@
 #include "aircraft.hpp"
 
 #include "GL/opengl_interface.hpp"
+#include "AircraftCrash.hpp"
 
 #include <cmath>
+#include <cassert>
 
 void Aircraft::turn_to_waypoint()
 {
@@ -22,6 +24,7 @@ void Aircraft::turn_to_waypoint()
 
 void Aircraft::turn(Point3D direction)
 {
+
     (speed += direction.cap_length(type.max_accel)).cap_length(max_speed());
 }
 
@@ -76,15 +79,10 @@ void Aircraft::operate_landing_gear()
     }
 }
 
-bool Aircraft::is_taking_off() const {
-    const auto it =  waypoints.begin();
-    return  it->is_on_ground() && !std::next(it)->is_on_ground() ;
-}
 
 
-
-
-void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
+template <bool front>
+void Aircraft::add_waypoint(const Waypoint& wp)
 {
     if (front)
     {
@@ -105,26 +103,27 @@ bool Aircraft::update()
         {
             return false;
         }
-
-        if(is_circling() && !has_terminal()){
             
-            waypoints =  control.reserve_terminal(*this);
-            /*if(!newWayPoint.empty()){
-                //std::copy(newWayPoint.begin(), newWayPoint.end(), waypoints.begin());
-                //waypoints.assign(newWayPoint.begin(), newWayPoint.end());
-                waypoints.erase(waypoints.begin(), waypoints.end());
-                std::copy(newWayPoint.begin(), newWayPoint.end(), waypoints.begin());
-            }*/
-        }else{
-            waypoints = control.get_instructions(*this);
-        }
-
+        const auto front = false;
+        for (const auto& wp: control.get_instructions(*this))
+        {
+            add_waypoint<front>(wp);
+        }    
     }
-
-
 
     if (!is_at_terminal)
     {
+
+        fuel_consumption();
+
+
+        if(is_circling()){
+            
+            auto newWaypoints =  control.reserve_terminal(*this);
+            if(!newWaypoints.empty()){
+                waypoints = std::move(newWaypoints);
+            }     
+        }
 
         turn_to_waypoint();
         // move in the direction of the current speed
@@ -149,16 +148,14 @@ bool Aircraft::update()
             if (!landing_gear_deployed)
             {
                 using namespace std::string_literals;
-                throw AircraftCrash { flight_number + " crashed into the ground"s };
+                //throw AircraftCrash { flight_number + " crashed into the ground"s };
+                throw AircraftCrash{flight_number, pos, speed, " crashed into the ground"};
+                
             }
         }
         else
         {
 
-            if( fuel-- <= 0){
-                std::cout << "Aircraft " << flight_number << " crashed !!" << std::endl;
-                return false;
-            }
             // if we are in the air, but too slow, then we will sink!
             const float speed_len = speed.length();
             if (speed_len < SPEED_THRESHOLD)
@@ -174,9 +171,24 @@ bool Aircraft::update()
 }
 
 
+void Aircraft::fuel_consumption()
+{
+    if(max_speed() == speed.length()){
+        fuel-=type.fuel_consumption;
+    }else{
+        fuel--;
+    }
+
+    if( fuel <= 0){
+        std::cout << "Aircraft " << flight_number << " crashed !!" << std::endl;
+                //throw AircraftCrash { flight_number + " crashed  due to fuel " };
+        throw AircraftCrash{flight_number, pos, speed, "crached due to fuel"};
+    }
+}
+
 bool Aircraft::is_circling() const
 {   
-   return !has_terminal() && !is_at_terminal;// && !is_taking_off();
+   return !has_terminal() && !is_at_terminal && !is_service_done;
 }
 
 bool Aircraft::has_terminal() const
@@ -199,7 +211,6 @@ int Aircraft::get_fuel() const
 
 void Aircraft::refill(int& fuel_stock) const
 {
-     std::cout <<"before " << flight_number << " fuel value "<< fuel << std::endl;
     int to_add = MAX_FUEL - fuel;
     if(fuel_stock <= to_add){
         to_add = fuel_stock;
