@@ -88,9 +88,8 @@ public:
     bool has_terminal() const;
     int get_fuel() const;
 
-    bool is_low_on_fuel() const {
-        return fuel<200;
-    }
+    bool is_low_on_fuel() const {return fuel<200;}
+    
     bool aircraft_in_terminal() const {return is_at_terminal;}
     
     void refill(int& fuel_stock) const; 

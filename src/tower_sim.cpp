@@ -40,10 +40,6 @@ TowerSimulation::~TowerSimulation()
     delete airport;
 }
 
-
-
-
-
 // On doit supprimer le const sur create_keystrokes, car on a maintenant des inputs succeptibles de modifier
 // le contenu de la simulation.
 void TowerSimulation::create_keystrokes()

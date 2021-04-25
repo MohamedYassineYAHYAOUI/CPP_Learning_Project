@@ -132,9 +132,6 @@ public:
         return result;
     }
 
-
-
-
     Point operator-() const 
     {
         Point point = *this;

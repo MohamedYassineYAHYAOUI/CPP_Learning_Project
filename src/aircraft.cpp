@@ -180,9 +180,10 @@ void Aircraft::fuel_consumption()
     }
 
     if( fuel <= 0){
-        std::cout << "Aircraft " << flight_number << " crashed !!" << std::endl;
+        std::cout << "Aircraft " << flight_number << " crashed !!" <<
+         std::endl;
                 //throw AircraftCrash { flight_number + " crashed  due to fuel " };
-        throw AircraftCrash{flight_number, pos, speed, "crached due to fuel"};
+        throw AircraftCrash{flight_number, pos, speed, "crashed due to fuel"};
     }
 }
 
